@@ -273,7 +273,7 @@
       </div>
       
       <div class="countdown" id="countdown">
-        Sisa Waktu Pembayaran: 02:00:00
+        Memuat...
       </div>
       
       <div class="info">
@@ -300,13 +300,15 @@
   </div>
   
   <script>
-    // Countdown timer
-    function startCountdown(duration, display) {
-      var timer = duration, hours, minutes, seconds;
-      setInterval(function () {
-        hours = parseInt(timer / 3600, 10);
-        minutes = parseInt((timer % 3600) / 60, 10);
-        seconds = parseInt(timer % 60, 10);
+    // Fungsi untuk memulai countdown
+    function startCountdown(startTime, display) {
+      // Hitung sisa waktu
+      var timer = Math.max(0, 7200 - Math.floor((Date.now() - startTime) / 1000));
+      
+      var interval = setInterval(function () {
+        var hours = parseInt(timer / 3600, 10);
+        var minutes = parseInt((timer % 3600) / 60, 10);
+        var seconds = parseInt(timer % 60, 10);
         
         hours = hours < 10 ? "0" + hours : hours;
         minutes = minutes < 10 ? "0" + minutes : minutes;
@@ -315,17 +317,64 @@
         display.textContent = "Sisa Waktu Pembayaran: " + hours + ":" + minutes + ":" + seconds;
         
         if (--timer < 0) {
+          clearInterval(interval);
           display.textContent = "Waktu Pembayaran Habis";
           display.style.color = "#000";
           display.style.background = "#f8d7da";
+          localStorage.removeItem('paymentStartTime');
+          
+          // Tambahkan notifikasi waktu habis
+          var note = document.querySelector('.note');
+          note.innerHTML = "⚠️ Perhatian: Waktu pembayaran Anda telah habis. Permohonan Anda dibatalkan. Silakan ajukan kembali permohonan paspor hilang Anda.";
+          note.style.display = "block";
+          
+          // Nonaktifkan tombol upload dan validasi
+          document.querySelector('.upload-btn').disabled = true;
+          document.querySelector('.valid-btn').disabled = true;
+          document.querySelector('.upload-btn').style.background = "#6c757d";
+          document.querySelector('.valid-btn').style.background = "#6c757d";
         }
       }, 1000);
     }
     
     window.onload = function () {
-      var twoHours = 2 * 60 * 60,
-          display = document.querySelector('#countdown');
-      startCountdown(twoHours, display);
+      var display = document.querySelector('#countdown');
+      var startTime;
+      
+      // Cek apakah sudah ada waktu mulai di localStorage
+      if (localStorage.getItem('paymentStartTime')) {
+        startTime = parseInt(localStorage.getItem('paymentStartTime'));
+        
+        // Hitung sisa waktu
+        var elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        var remainingTime = 7200 - elapsedTime;
+        
+        // Jika waktu sudah habis
+        if (remainingTime <= 0) {
+          display.textContent = "Waktu Pembayaran Habis";
+          display.style.color = "#000";
+          display.style.background = "#f8d7da";
+          localStorage.removeItem('paymentStartTime');
+          
+          // Tambahkan notifikasi waktu habis
+          var note = document.querySelector('.note');
+          note.innerHTML = "⚠️ Perhatian: Waktu pembayaran Anda telah habis. Permohonan Anda dibatalkan. Silakan ajukan kembali permohonan paspor hilang Anda.";
+          note.style.display = "block";
+          
+          // Nonaktifkan tombol upload dan validasi
+          document.querySelector('.upload-btn').disabled = true;
+          document.querySelector('.valid-btn').disabled = true;
+          document.querySelector('.upload-btn').style.background = "#6c757d";
+          document.querySelector('.valid-btn').style.background = "#6c757d";
+          return;
+        }
+      } else {
+        // Simpan waktu mulai pertama kali
+        startTime = Date.now();
+        localStorage.setItem('paymentStartTime', startTime);
+      }
+      
+      startCountdown(startTime, display);
     };
   </script>
 </body>
