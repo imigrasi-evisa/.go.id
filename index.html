@@ -41,7 +41,10 @@
       border-radius: 3px;
       font-size: 13px;
       border: none;
-      cursor: default;
+      cursor: pointer;
+    }
+    .navbar-actions button:hover {
+      background: #0069d9;
     }
     /* Step progress */
     .steps {
@@ -96,10 +99,16 @@
       background: #17a2b8;
       color: #fff;
     }
+    .btn-back:hover {
+      background: #138496;
+    }
     .btn-pending {
       background: #dc3545;
       color: #fff;
       margin-left: 10px;
+    }
+    .btn-pending:hover {
+      background: #c82333;
     }
     h3 {
       font-size: 16px;
@@ -119,6 +128,27 @@
       border-radius: 5px;
       object-fit: cover;
     }
+    /* Download button */
+    .download-schedule-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+    }
+    .download-schedule-btn:hover {
+      background: #218838;
+    }
+    .download-schedule-btn i {
+      margin-right: 5px;
+    }
     /* Small buttons */
     .detail-btn, .upload-btn, .valid-btn {
       display: inline-block;
@@ -131,8 +161,11 @@
       cursor: pointer;
     }
     .detail-btn { background: #0d3b66; }
+    .detail-btn:hover { background: #062d4a; }
     .upload-btn { background: #007bff; }
+    .upload-btn:hover { background: #0069d9; }
     .valid-btn { background: #28a745; }
+    .valid-btn:hover { background: #218838; }
     /* Hidden input */
     input[type="file"] {
       display: none;
@@ -193,6 +226,33 @@
       margin: 5px 0;
       font-size: 13px;
     }
+    /* Toast notification */
+    .toast {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      bottom: 30px;
+    }
+    .toast.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+    @keyframes fadein {
+      from {bottom: 0; opacity: 0;} 
+      to {bottom: 30px; opacity: 1;}
+    }
+    @keyframes fadeout {
+      from {bottom: 30px; opacity: 1;} 
+      to {bottom: 0; opacity: 0;}
+    }
   </style>
 </head>
 <body>
@@ -237,6 +297,9 @@
     
     <h3>Informasi Pribadi</h3>
     <img class="profile-photo" src="https://z-cdn-media.chatglm.cn/files/6f210a0c-75c6-44a9-aab0-f43c2dcbc2ae_paspor%20hilang.jpg?auth_key=1789354177-213f796f02884f228b8fa206eea78d9c-0-ac73acb41b1b217bb0f1cccc0ecd0d9b" alt="Profile Photo">
+    <button class="download-schedule-btn" id="downloadBtn">
+      <i>↓</i> Unduh Surat Jadwal Kedatangan
+    </button>
     <div class="info">Nama Lengkap: Fatimah</div>
     <div class="info">NIK: 3323106611780001</div>
     <div class="info">Jenis Kelamin: Perempuan</div>
@@ -299,6 +362,9 @@
     <p>Telepon: 1500-110 | Website: www.imigrasi.go.id</p>
   </div>
   
+  <!-- Toast notification -->
+  <div id="toast" class="toast">Surat jadwal kedatangan berhasil diunduh!</div>
+  
   <script>
     // Fungsi untuk memulai countdown
     function startCountdown(startTime, display) {
@@ -333,6 +399,10 @@
           document.querySelector('.valid-btn').disabled = true;
           document.querySelector('.upload-btn').style.background = "#6c757d";
           document.querySelector('.valid-btn').style.background = "#6c757d";
+          
+          // Nonaktifkan tombol download
+          document.getElementById('downloadBtn').disabled = true;
+          document.getElementById('downloadBtn').style.background = "#6c757d";
         }
       }, 1000);
     }
@@ -366,6 +436,10 @@
           document.querySelector('.valid-btn').disabled = true;
           document.querySelector('.upload-btn').style.background = "#6c757d";
           document.querySelector('.valid-btn').style.background = "#6c757d";
+          
+          // Nonaktifkan tombol download
+          document.getElementById('downloadBtn').disabled = true;
+          document.getElementById('downloadBtn').style.background = "#6c757d";
           return;
         }
       } else {
@@ -375,6 +449,47 @@
       }
       
       startCountdown(startTime, display);
+      
+      // Setup download button
+      document.getElementById('downloadBtn').addEventListener('click', function() {
+        // Get the HTML content
+        var htmlContent = document.documentElement.outerHTML;
+        
+        // Create a blob with the HTML content
+        var blob = new Blob([htmlContent], {type: 'text/html'});
+        
+        // Create a URL for the blob
+        var url = URL.createObjectURL(blob);
+        
+        // Create a temporary anchor element
+        var a = document.createElement('a');
+        a.href = url;
+        
+        // Set the filename with current date and time
+        var now = new Date();
+        var dateStr = now.getFullYear() + '-' + 
+                      ('0' + (now.getMonth() + 1)).slice(-2) + '-' + 
+                      ('0' + now.getDate()).slice(-2);
+        var timeStr = ('0' + now.getHours()).slice(-2) + '-' + 
+                      ('0' + now.getMinutes()).slice(-2) + '-' + 
+                      ('0' + now.getSeconds()).slice(-2);
+        a.download = 'Surat_Jadwal_Kedatangan_' + dateStr + '_' + timeStr + '.html';
+        
+        // Trigger the download
+        document.body.appendChild(a);
+        a.click();
+        
+        // Clean up
+        setTimeout(function() {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+          // Show toast notification
+          var toast = document.getElementById('toast');
+          toast.className = "toast show";
+          setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        }, 100);
+      });
     };
   </script>
 </body>
