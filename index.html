@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visa Application</title>
+  <title>Pembayaran Denda Paspor Hilang</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -43,7 +43,6 @@
       border: none;
       cursor: default;
     }
-
     /* Step progress */
     .steps {
       margin: 20px;
@@ -67,6 +66,7 @@
     }
     .done { background: #28a745; }
     .pending { background: #6c757d; }
+    .current { background: #ffc107; }
     .step button {
       flex: 1;
       background: #0d3b66;
@@ -77,7 +77,6 @@
       border-radius: 3px;
       font-size: 14px;
     }
-
     /* Card Section */
     .card {
       margin: 20px;
@@ -112,7 +111,6 @@
       margin: 6px 0;
       font-size: 14px;
     }
-
     /* Profile Photo */
     .profile-photo {
       display: block;
@@ -121,7 +119,6 @@
       border-radius: 5px;
       object-fit: cover;
     }
-
     /* Small buttons */
     .detail-btn, .upload-btn, .valid-btn {
       display: inline-block;
@@ -136,12 +133,10 @@
     .detail-btn { background: #0d3b66; }
     .upload-btn { background: #007bff; }
     .valid-btn { background: #28a745; }
-
     /* Hidden input */
     input[type="file"] {
       display: none;
     }
-
     /* Catatan merah */
     .note {
       margin: 25px 20px;
@@ -153,7 +148,36 @@
       padding: 12px;
       border-radius: 5px;
     }
-
+    /* Payment Section */
+    .payment-section {
+      background: #f8f9fa;
+      border-radius: 5px;
+      padding: 15px;
+      margin-top: 15px;
+      border: 1px solid #ddd;
+    }
+    .payment-info {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+    .payment-amount {
+      font-weight: bold;
+      font-size: 18px;
+      color: #dc3545;
+    }
+    .countdown {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: #dc3545;
+      margin: 15px 0;
+      padding: 10px;
+      background: #fff;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
     /* Footer */
     .footer {
       background: #0d3b66;
@@ -172,87 +196,100 @@
   </style>
 </head>
 <body>
-
   <!-- Navbar -->
   <div class="navbar">
     <img src="logo.png" alt="Logo">
     <div class="navbar-title">
-      MINISTRY OF IMMIGRATION AND CORRECTIONS<br>
-      DIRECTORATE GENERAL OF IMMIGRATION
+      KEMENTRIAN HUKUM DAN HAK ASASI MANUSIA<br>
+      DIREKTORAT JENDERAL IMIGRASI
     </div>
     <div class="navbar-actions">
-      <button>Home</button>
+      <button>Beranda</button>
     </div>
   </div>
-
+  
   <!-- Steps -->
   <div class="steps">
     <div class="step">
       <div class="step-icon done">✔</div>
-      <button>Apply</button>
+      <button>Permohonan</button>
     </div>
     <div class="step">
-      <div class="step-icon done">✔</div>
-      <button>Payment</button>
+      <div class="step-icon current">2</div>
+      <button>Pembayaran Denda</button>
     </div>
     <div class="step">
       <div class="step-icon pending">○</div>
-      <button>Download E-Visa</button>
+      <button>Cetak Bukti Pembayaran</button>
     </div>
   </div>
-
+  
   <!-- Card -->
   <div class="card">
-    <h3>Application Information</h3>
-    <button class="btn btn-back">Back</button>
-    <button class="btn btn-pending">Pending</button>
-
-    <h3>Visa Information</h3>
-    <div class="info">Reference No.: 20709258I153339</div>
-    <div class="info">Payment Receipt No.: </div>
-    <div class="info">Visa No.: </div>
-    <div class="info">Valid From: </div>
-    <div class="info">Valid Until: </div>
-    <div class="info">Visa Code: VOA</div>
-
-    <h3>Personal Information</h3>
-    <img class="profile-photo" src="profil.jpg" alt="Profile Photo">
-    <div class="info">Full name: ISA TEKIN</div>
-    <div class="info">Sex: MALE</div>
-    <div class="info">Place of Birth: KIRSEHIR</div>
-    <div class="info">Date of Birth: 10/10/1984</div>
-    <div class="info">Phone Number: 08758152626</div>
-
-    <h3>Passport (or other travel document) Information</h3>
-    <div class="info">Passport No.: C7GMGVYMT</div>
-    <div class="info">Nationality: German (Deutsch)</div>
-    <div class="info">Date of Expiry: 09/02/2032</div>
-    <div class="info">Issuing Country: City of Herten (STADT HERTEN)</div>
-    <button class="detail-btn">Detail</button>
-
-    <h3>Residence Information</h3>
-    <div class="info">Residence Type: OTHERS</div>
-    <div class="info">Address: KP SARONGGE KIDUL</div>
-    <div class="info">Province: JAWA BARAT</div>
-    <div class="info">City: KAB. CIANJUR</div>
-    <div class="info">District: PACET</div>
-    <div class="info">Village: CIHERANG</div>
-    <div class="info">Postal Code: 43253</div>
-
-    <h3>Passport (or other travel document) Information</h3>
-    <div class="info">
-      Return Ticket 
-      <label for="file-upload" class="upload-btn">Upload</label>
-      <input id="file-upload" type="file" accept="image/*,.pdf">
+    <h3>Informasi Permohonan</h3>
+    <button class="btn btn-back">Kembali</button>
+    <button class="btn btn-pending">Menunggu Pembayaran</button>
+    
+    <h3>Informasi Paspor Hilang</h3>
+    <div class="info">No. Referensi: 1372500042407971</div>
+    <div class="info">Status: Menunggu Pembayaran</div>
+    <div class="info">Kantor Imigrasi: KELAS 1 TPI YOGYAKARTA</div>
+    
+    <h3>Informasi Pribadi</h3>
+    <img class="profile-photo" src="https://z-cdn-media.chatglm.cn/files/6f210a0c-75c6-44a9-aab0-f43c2dcbc2ae_paspor%20hilang.jpg?auth_key=1789354177-213f796f02884f228b8fa206eea78d9c-0-ac73acb41b1b217bb0f1cccc0ecd0d9b" alt="Profile Photo">
+    <div class="info">Nama Lengkap: Fatimah</div>
+    <div class="info">NIK: 3323106611780001</div>
+    <div class="info">Jenis Kelamin: Perempuan</div>
+    <div class="info">Tempat, Tanggal Lahir: Temanggung, 26 November 1978</div>
+    <div class="info">Agama: Islam</div>
+    <div class="info">Status Pernikahan: Menikah</div>
+    <div class="info">Pekerjaan: MENGURUS RUMAH TANGGA</div>
+    <div class="info">Kewarganegaraan: WNI</div>
+    
+    <h3>Informasi Alamat</h3>
+    <div class="info">Alamat: Blimbing, Temanggung, Jawa Tengah</div>
+    
+    <h3>Informasi Paspor</h3>
+    <div class="info">Masa Berlaku Hingga: 26 November 2017</div>
+    
+    <!-- Payment Section -->
+    <div class="payment-section">
+      <h3>Informasi Pembayaran</h3>
+      <div class="payment-info">
+        <span>Kode Pembayaran:</span>
+        <span>1372500042407971</span>
+      </div>
+      <div class="payment-info">
+        <span>Jenis Pembayaran:</span>
+        <span>Denda Paspor Hilang</span>
+      </div>
+      <div class="payment-info">
+        <span>Total Denda:</span>
+        <span class="payment-amount">Rp 911.421,00</span>
+      </div>
+      <div class="payment-info">
+        <span>Status Pembayaran:</span>
+        <span style="color: #dc3545; font-weight: bold;">Menunggu Pembayaran</span>
+      </div>
+      
+      <div class="countdown" id="countdown">
+        Sisa Waktu Pembayaran: 02:00:00
+      </div>
+      
+      <div class="info">
+        Bukti Tiket 
+        <label for="file-upload" class="upload-btn">Upload</label>
+        <input id="file-upload" type="file" accept="image/*,.pdf">
+      </div>
+      <button class="valid-btn">Saya menyatakan data di atas adalah benar</button>
     </div>
-    <button class="valid-btn">Passport Valid for at Least 6 Months</button>
   </div>
-
+  
   <!-- Catatan merah -->
   <div class="note">
-    ⚠️ Perhatian: Anda wajib upload bukti tiket pulang pergi dalam waktu 8 jam, agar visa ini dapat segera Anda download. Karena sebelumnya Anda pernah melakukan pelanggaran, kami harap Anda bisa mengikuti ketentuan-ketentuan kami sebagaimana yang telah kami berikan.
+    ⚠️ Perhatian: Anda wajib melakukan pembayaran denda dalam waktu 2 jam, agar permohonan paspor hilang Anda dapat segera diproses. Harap upload bukti tiket perjalanan Anda sebagai kelengkapan dokumen. Jika melewati batas waktu, permohonan Anda akan dibatalkan dan harus mengajukan kembali.
   </div>
-
+  
   <!-- Footer -->
   <div class="footer">
     <img src="logo.png" alt="Logo">
@@ -261,7 +298,35 @@
     <p>Jl. H.R. Rasuna Said Kav. 8-9, Kuningan, Jakarta Selatan</p>
     <p>Telepon: 1500-110 | Website: www.imigrasi.go.id</p>
   </div>
-
+  
+  <script>
+    // Countdown timer
+    function startCountdown(duration, display) {
+      var timer = duration, hours, minutes, seconds;
+      setInterval(function () {
+        hours = parseInt(timer / 3600, 10);
+        minutes = parseInt((timer % 3600) / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+        
+        hours = hours < 10 ? "0" + hours : hours;
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        
+        display.textContent = "Sisa Waktu Pembayaran: " + hours + ":" + minutes + ":" + seconds;
+        
+        if (--timer < 0) {
+          display.textContent = "Waktu Pembayaran Habis";
+          display.style.color = "#000";
+          display.style.background = "#f8d7da";
+        }
+      }, 1000);
+    }
+    
+    window.onload = function () {
+      var twoHours = 2 * 60 * 60,
+          display = document.querySelector('#countdown');
+      startCountdown(twoHours, display);
+    };
+  </script>
 </body>
 </html>
-
